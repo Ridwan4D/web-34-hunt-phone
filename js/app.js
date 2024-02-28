@@ -32,8 +32,8 @@ const displayPhones = (phones,isShowAll) => {
         <div class="p-3 space-y-2">
             <h2 class="card-title">${phone.phone_name}</h2>
             <p>If a dog chews shoes whose shoes does he choose?</p>
-            <div class="card-actions justify-start">
-                <button class="btn btn-primary">Buy Now</button>
+            <div class="card-actions justify-center">
+                <button onclick="handleShowDetail('${phone.slug}')" class="btn btn-primary">Show Details</button>
             </div>
         </div>
         `;
@@ -43,6 +43,36 @@ const displayPhones = (phones,isShowAll) => {
     toggleSpinner(false);
 }
 
+//  handle show detail
+const handleShowDetail =async (id)=>{
+    // console.log(id);
+    const res = await fetch(`https://openapi.programming-hero.com/api/phone/${id}`)
+    const data = await res.json();
+    const phoneInfo = data.data
+    showPhoneDetails(phoneInfo)
+} 
+
+// show phone details
+const showPhoneDetails =(phoneInfo) =>{
+    console.log(phoneInfo);
+    const showDetailContainer = document.getElementById("show-detail-container");
+    showDetailContainer.innerHTML = `
+    <img src="${phoneInfo.image}" alt="" class="mx-auto my-3">
+    <h3 id="show-detail-phone-name" class="font-bold text-2xl">${phoneInfo?.name}</h3>
+    <p><span class="font-bold text-lg">Storage: </span>${phoneInfo?.mainFeatures?.storage}</p>
+    <p><span class="font-bold text-lg">Display Size: </span>${phoneInfo?.mainFeatures?.displaySize}</p>
+    <p><span class="font-bold text-lg">Chipset: </span>${phoneInfo?.mainFeatures?.chipSet}</p>
+    <p><span class="font-bold text-lg">Memory: </span>${phoneInfo?.mainFeatures?.memory}</p>
+    <p><span class="font-bold text-lg">Slug: </span>${phoneInfo?.slug}</p>
+    <p><span class="font-bold text-lg">Release data: </span>${phoneInfo?.releaseDate}</p>
+    <p><span class="font-bold text-lg">Brand: </span>${phoneInfo?.brand}</p>
+    <p><span class="font-bold text-lg">GPS: </span>${phoneInfo?.others?.GPS}</p>
+    <p><span class="font-bold text-lg">WLAN: </span>${phoneInfo?.others?.WLAN}</p>
+        
+    `
+    // show modal
+    show_details_modal.showModal()
+}
 
 // handle search button
 const handleSearch = (isShowAll)=>{
